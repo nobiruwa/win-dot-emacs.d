@@ -1,0 +1,7 @@
+*.elc
+init_env.el
+
+auto-save-list/*
+server/*
+tmp/*
+!tmp/.gitkeep
