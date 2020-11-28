@@ -3,6 +3,21 @@
 ;;;  My Emacs settings.
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 追加の設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; initファイルロード関数の定義
+(defun load-env-if-exists (env-path)
+  "与えられたENV-PATHが存在する場合、initファイルとみなしてロードします。"
+  (let ((init-env-el (expand-file-name env-path)))
+    (when (file-exists-p init-env-el)
+      (load-file init-env-el))))
+
+;;;
+;; 環境ごとの設定を~/.emacs.d/init_env_pre.elに書く
+;;;
+(load-env-if-exists "~/.emacs.d/init_env_pre.el")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; グローバルな設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;
@@ -10,6 +25,18 @@
 ;;;;;;;;
 ;; load-path
 (setq load-path (append (list "~/.emacs.d/site-lisp") load-path))
+
+;; exec-path
+(defun add-executable-path (path)
+  "exec-path変数とPATH環境変数の両方に引数で与えられたpathを追加します。"
+  (when (file-exists-p path)
+    (let* ((path-in-env (replace-regexp-in-string "/" "\\\\" path))
+          (path-in-env-semicolon (concat path-in-env ";")))
+      (add-to-list 'exec-path path)
+      (setenv "PATH" (concat path-in-env-semicolon (getenv "PATH"))))))
+
+(add-executable-path "C:/diffutils/bin")
+(add-executable-path "C:/gnu/bin")
 
 ;; バックアップファイル(foo.txt~)
 ;; バックアップファイルを作らない
@@ -352,12 +379,9 @@ See `expand-file-name'."
 ;; 追加の設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;; 環境ごとの設定を~/.emacs.d/init_env.elに書く
+;; 環境ごとの設定を~/.emacs.d/init_env_post.elに書く
 ;;;
-(let ((init-env-el (expand-file-name "~/.emacs.d/init_env.el")))
-  (when (file-exists-p init-env-el)
-      (load-file init-env-el)))
-
+(load-env-if-exists "~/.emacs.d/init_env_post.el")
 
 ;; Local Variables:
 ;; coding: utf-8-dos
