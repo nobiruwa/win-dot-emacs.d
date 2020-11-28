@@ -65,18 +65,6 @@
 (setq visible-cursor nil)
 
 ;;;;;;;;
-;; 初期化
-;;;;;;;;
-;; 起動画面がいつまでも消えてくれないのではなから使わない
-(setq inhibit-startup-message t)
-;; emacsclient
-(server-start)
-;; デバッグをする場合はt
-(setq debug-on-error nil)
-;; カーソルを点灯したままにする
-(setq visible-cursor nil)
-
-;;;;;;;;
 ;; 特定のモードに関連付けられないキーの設定
 ;;;;;;;;
 ;; C-zを無効にする
