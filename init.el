@@ -35,8 +35,12 @@
       (add-to-list 'exec-path path)
       (setenv "PATH" (concat path-in-env-semicolon (getenv "PATH"))))))
 
+(add-executable-path "C:/coreutils/bin")
 (add-executable-path "C:/diffutils/bin")
+(add-executable-path "C:/findutils/bin")
 (add-executable-path "C:/gnu/bin")
+(add-executable-path "C:/grep/bin")
+(add-executable-path "C:/sed/bin")
 
 ;; バックアップファイル(foo.txt~)
 ;; バックアップファイルを作らない

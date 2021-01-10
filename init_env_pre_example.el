@@ -20,3 +20,7 @@
           (list `(,proxy-host-and-port
                   ,(cons "Input your LDAP UID !"
                          (base64-encode-string proxy-user-and-password)))))))
+
+;; Local Variables:
+;; coding: utf-8-dos
+;; End:
