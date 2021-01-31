@@ -35,10 +35,12 @@
       (add-to-list 'exec-path path)
       (setenv "PATH" (concat path-in-env-semicolon (getenv "PATH"))))))
 
+;; GnuWin32のinstall.batですべてのパッケージをインストールした場合
+(add-executable-path "C:/gnu/gnuwin32/bin")
+;; GnuWin32の実行ファイルを個別にダウンロードした場合
 (add-executable-path "C:/coreutils/bin")
 (add-executable-path "C:/diffutils/bin")
 (add-executable-path "C:/findutils/bin")
-(add-executable-path "C:/gnu/bin")
 (add-executable-path "C:/grep/bin")
 (add-executable-path "C:/sed/bin")
 
