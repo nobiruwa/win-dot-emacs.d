@@ -77,6 +77,8 @@
 (setq show-paren-mode t)
 ;; ツールバーを表示する場合はnon-nil
 (setq tool-bar-mode nil)
+;; ベル音を画面のフラッシュに変更する場合はnon-nil
+(setq visible-bell t)
 ;; カーソルを点灯したままにする
 (setq visible-cursor nil)
 
@@ -167,6 +169,7 @@
 ;; ref: https://www.emacswiki.org/emacs/ShellDirtrackByPrompt
 ;; ref: https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Tracking.html#Directory-Tracking
 (require 'dirtrack)
+(require 'shell)
 (add-hook 'comint-mode-hook
           (lambda ()
             ;; stop the usual shell-dirtrack mode
@@ -261,6 +264,8 @@
 ;; (autoload 'ansi-color-for-comint-mode-on "ansi-color"
 ;;  "Set `ansi-color-for-comint-mode' to t." t)
 ;;(setq ansi-color-names-vector ["black" "red3" "green3" "yellow3" "navy" "magenta3" "cyan3" "white"])
+
+;; company-modeのパス補完動作のカスタマイズ
 (defun first-to-last (suffix list)
   "先頭の要素がSUFFIXを含む場合、LISTの先頭要素を末尾に移動した新しいリストを返します。"
   (if (and list (string-suffix-p suffix (nth 0 list)))
@@ -275,6 +280,8 @@
 
 (add-hook 'shell-mode-hook
           (lambda ()
+            ;; use CP932
+            (set-buffer-process-coding-system 'cp932-dos 'cp932-dos)
             ;; 存在しないファイル名の入力をスムーズにするため
             (setq-local company-require-match nil)
             ;; 色付け
@@ -364,7 +371,8 @@ See `expand-file-name'."
   (let ((buffer (or buffer "*powershell*"))
     (powershell-prog "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"))
     (make-comint-in-buffer "shell" "*powershell*" powershell-prog)
-    (switch-to-buffer buffer)))
+    (switch-to-buffer buffer)
+    (set-buffer-process-coding-system 'cp932-dos 'cp932-dos)))
 
 ;;;
 ;; previous-lineのオーバーライド
@@ -461,7 +469,7 @@ See `expand-file-name'."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ac-slime browse-kill-ring company-dict csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
+   '(ac-slime browse-kill-ring company-dict counsel csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
