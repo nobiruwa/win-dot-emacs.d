@@ -288,6 +288,39 @@ See `expand-file-name'."
   (if arg
       (insert (expand-file-name filename))
     (insert filename)))
+
+;; C-c C-c 現バッファの内容を保存してバッファを消す
+;; Ref: http://howm.sourceforge.jp/cgi-bin/hiki/hiki.cgi?SaveAndKillBuffer
+(defun my-save-and-kill-buffer ()
+  (interactive)
+  (save-buffer)
+  (kill-buffer nil))
+
+;; リージョンの単語をソートする
+(defvar separators-per-mode
+  '((emacs-lisp-mode " +" " ")
+    (haskell-mode ", *" ", ")
+    (otherwise ", *" ", ")))
+
+(defun my-sort-words-in-region (start end)
+  "sort words separated white spaces in the current region."
+  (interactive "r")
+  (let* ((separators (if (assoc major-mode separators-per-mode)
+                        (assoc major-mode separators-per-mode)
+                       (assoc 'otherwise separators-per-mode)))
+         (sep-regexp (cadr separators))
+         (sep-fixed (caddr separators)))
+    (replace-string
+     (buffer-substring start end)
+     (my-sort-words-in-line (buffer-substring start end) sep-regexp sep-fixed)
+     nil start end)))
+
+;; 文字列内の単語をソートする
+(defun my-sort-words-in-line (text sep-regexp sep-fixed)
+  "sort words separated white spaces in a line."
+  (mapconcat 'identity (sort
+   (split-string text sep-regexp) 'string<) sep-fixed))
+
 ;;;
 ;; previous-lineのオーバーライド
 ;;;
@@ -377,6 +410,19 @@ See `expand-file-name'."
 ;;;
 (load-env-if-exists "~/.emacs.d/init_env_post.el")
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(ac-slime browse-kill-ring company-dict csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 ;; Local Variables:
 ;; coding: utf-8-dos
 ;; End:
