@@ -67,6 +67,16 @@
 (server-start)
 ;; デバッグをする場合はt
 (setq debug-on-error nil)
+;; デバッグをする場合はnon-nil
+(setq debug-on-error nil)
+;; 行数を表示する場合はnon-nil
+(setq line-number-mode t)
+;; メニューバーを表示する場合はnon-nil
+(setq menu-bar-mode nil)
+;; 対となる括弧を強調表示する場合はnon-nil
+(setq show-paren-mode t)
+;; ツールバーを表示する場合はnon-nil
+(setq tool-bar-mode nil)
 ;; カーソルを点灯したままにする
 (setq visible-cursor nil)
 
@@ -149,6 +159,27 @@
 ;;             (setq c-basic-offset 2)))
 
 ;;;;;;;;
+;; comint mode
+;;;;;;;;
+;; Try without shell prompt change
+;; Compatible with Windows and at least some Linux shells
+;; change the method used to determine the current directory in a shell
+;; ref: https://www.emacswiki.org/emacs/ShellDirtrackByPrompt
+;; ref: https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Tracking.html#Directory-Tracking
+(require 'dirtrack)
+(add-hook 'comint-mode-hook
+          (lambda ()
+            ;; stop the usual shell-dirtrack mode
+            (shell-dirtrack-mode 0)
+            ;; (setq ssh-directory-tracking-mode 'ftp)
+            ;; for help making this regular expression you may want to use "M-x re-builder", where M is usually alt
+            (setq dirtrack-list '(":*\\(PS \\)?\\([A-Za-z]*:*~*[\/\\].*?\\)[^-+A-Za-z0-9_.()//\\ ]" 2))
+            ;; this shows any change in directory that dirtrack mode sees
+            ;; (dirtrack-debug-mode)
+            ;; enable the more powerful dirtrack mode
+            (dirtrack-mode)))
+
+;;;;;;;;
 ;; ediff
 ;;;;;;;;
 (require 'ediff)
@@ -220,9 +251,11 @@
 ;; *shell*バッファを現在のウィンドウで開く
 (add-to-list 'display-buffer-alist
              '("^\\*shell\\*\\(<[0-9]+>\\)?$" . (display-buffer-same-window)))
+
 ;; solarized-darkと組み合わせた時のプロンプトの色
 (when (eq window-system 'x)
   (set-face-foreground 'comint-highlight-prompt "#268bd2"))
+
 ;; shell-modeの拡張
 ;; lsなどの色の設定
 ;; (autoload 'ansi-color-for-comint-mode-on "ansi-color"
@@ -320,6 +353,18 @@ See `expand-file-name'."
   "sort words separated white spaces in a line."
   (mapconcat 'identity (sort
    (split-string text sep-regexp) 'string<) sep-fixed))
+
+;;;;
+;; M-x powershell
+;; https://stackoverflow.com/questions/872510/can-i-use-powershell-in-shell-mode-for-emacs
+;;;;
+(defun powershell (&optional buffer)
+  "Launches a powershell in buffer *powershell* and switches to it."
+  (interactive)
+  (let ((buffer (or buffer "*powershell*"))
+    (powershell-prog "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"))
+    (make-comint-in-buffer "shell" "*powershell*" powershell-prog)
+    (switch-to-buffer buffer)))
 
 ;;;
 ;; previous-lineのオーバーライド
