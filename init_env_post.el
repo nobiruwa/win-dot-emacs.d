@@ -159,6 +159,21 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
        (setq js2-basic-offset 2)))
 
 ;;;;;;;;
+;; org-mode
+;;;;;;;;
+(add-hook 'org-mode-hook
+          (lambda ()
+            ;; Disable enlarged org-mode header appearance
+            ;; https://emacs.stackexchange.com/questions/22584/disable-enlarged-org-mode-header-appearance/22589#22589
+            "Stop the org-level headers from increasing in height relative to the other text."
+            (dolist (face '(org-level-1
+                            org-level-2
+                            org-level-3
+                            org-level-4
+                            org-level-5))
+              (set-face-attribute face nil :family user--cjk-font :weight 'semi-bold :height 1.0))))
+
+;;;;;;;;
 ;; purescript-mode
 ;;;;;;;;
 (add-hook 'purescript-mode-hook
