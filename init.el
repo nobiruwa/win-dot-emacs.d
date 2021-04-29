@@ -450,6 +450,8 @@ See `expand-file-name'."
 ;; Ensure user--standard-fontset gets used for new frames.
 (add-to-list 'default-frame-alist (cons 'font user--standard-fontset))
 (add-to-list 'initial-frame-alist (cons 'font user--standard-fontset))
+;; Let the face 'fixed-pitch' use my fontset 'user--standard-fontset'.
+(set-face-attribute 'fixed-pitch nil :family 'unspecified)
 
 ;;;
 ;; customize theme, color
