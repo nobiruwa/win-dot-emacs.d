@@ -240,8 +240,8 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (global-set-key "\C-xj" 'skk-mode)
 (global-set-key "\C-x\C-j" 'skk-mode)
 
-;; L辞書
-(setq skk-large-jisyo "~/.emacs.d/dict/SKK-JISYO.L")
+;; SKK L辞書の場所
+(setq skk-large-jisyo (expand-file-name "~/.emacs.d/dict/SKK-JISYO.L"))
 
 ;;;;;;;;
 ;; slime
