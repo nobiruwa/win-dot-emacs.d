@@ -400,6 +400,8 @@ See `expand-file-name'."
 ;; customize font
 ;;;
 ;; Ref: https://www.shimmy1996.com/en/posts/2018-06-24-fun-with-fonts-in-emacs/
+;; Ref: https://qiita.com/melito/items/238bdf72237290bc6e42
+;; Ref: http://misohena.jp/blog/2017-09-26-symbol-font-settings-for-emacs25.html
 (defvar user--cjk-font "VL Gothic"
   "Default font for CJK characters")
 
@@ -429,12 +431,19 @@ See `expand-file-name'."
   ;; 記号にはデフォルトのフォントではなく指定のフォントを使いたい
   (setq use-default-font-for-symbols nil)
   (create-fontset-from-ascii-font user--cjk-font nil (replace-regexp-in-string "fontset-" "" user--standard-fontset))
+  ;; unicodeに対してuser--cjk-fontがグリフを持っていればそれを使い、
+  ;; 持っていない場合にはuser--unicode-fontで補完する
+  (set-fontset-font user--standard-fontset 'unicode
+                    (font-spec :family user--cjk-font)
+                    nil)
   (set-fontset-font user--standard-fontset 'unicode
                     (font-spec :family user--unicode-font)
-                    nil 'prepend)
+                    nil 'append)
+  ;; latinに対してuser--latin-fontを使う
   (set-fontset-font user--standard-fontset 'latin
                     (font-spec :family user--latin-font)
                     nil 'prepend)
+  ;; CJKに対してuser--cjk-fontを使う
   (dolist (charset '(kana han cjk-misc hangul kanbun bopomofo))
     (set-fontset-font user--standard-fontset charset
                   (font-spec :family user--cjk-font)
