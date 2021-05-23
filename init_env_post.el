@@ -339,6 +339,11 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
                              (setq web-mode-auto-close-style 1))))
 
 ;;;;;;;;
+;; wgrep
+;;;;;;;;
+(require 'wgrep nil t)
+
+;;;;;;;;
 ;; yasnippet
 ;;;;;;;;
 (require 'yasnippet)
