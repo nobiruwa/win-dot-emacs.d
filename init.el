@@ -396,55 +396,6 @@ See `expand-file-name'."
 ;;;;;;;;;;;;; 以下、ELispファイルを追加する必要があるものを設定 ;;;;;;
 ;;;;;;;;;;;;; アルファベット順になるよう努力 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;
-;; MeadowMemo http://www.bookshelf.jp/soft/ の管理人が
-;; 自作したEmacs Lisp
-;;;;;;;;;;;;;;;
-;;color-moccur
-;;すべてのバッファを対象に occur を行う．
-;;ついでに，今開いているすべてのファイルを対象に grep もできる．
-;;さらに，M-x search-buffers の後でスペースで区切って単語を入れると，
-;;バッファの全文検索ができる．
-(require 'color-moccur)
-(setq *moccur-buffer-name-exclusion-list*
-      '(".+TAGS.+" "*Completions*" "*Messages*"
-        "newsrc.eld"
-        " *migemo*" ".bbdb"))
-(setq dmoccur-exclusion-mask
-      (append (remove "\\.git/.+" dmoccur-exclusion-mask) '("/\\.git/.+")))
-(define-key Buffer-menu-mode-map "O" 'Buffer-menu-moccur)
-(setq dmoccur-use-list t)
-(setq dmoccur-use-project t)
-(setq dmoccur-list
-      '(
-        ;(任意の名前 実際のディレクトリ 検索したいファイルの正規表現 オプション)
-        ("dir" default-directory (".*") dir)
-        ("current" default-directory (".*") nil)
-        ;;("soft" "~/www/soft/" ("\\.texi$") nil)
-        ;;("config" "~/mylisp/"  ("\\.js" "\\.el$") nil)
-        ;;("1.99" "d:/unix/Meadow2/1.99a6/" (".*") sub)
-        ))
-(define-key dired-mode-map "O" 'dired-do-moccur)
-(setq moccur-split-word t)
-(setq color-moccur-default-ime-status nil)
-;;(global-set-key "\C-c\C-x\C-o" 'moccur)
-;別のキーバインドにしたい
-;;(global-set-key "\C-c\C-o" 'search-buffers)
-;; If this value is t, cursor motion in the moccur-grep buffer causes
-;; automatic display of the corresponding source code location.
-(setq moccur-grep-following-mode-toggle t)
-
-;; moccur-edit.el
-;; color-moccur の検索結果を直接編集し，ファイルに変更を適用できる．
-;; 関数名の変更などが簡単にできる.
-;;(autoload 'moccur-edit "moccur-edit" "edit moccur buffer" nil t)
-(require 'moccur-edit)
-
-;; grep-edit -> wdiredに置き換えました。
-;; grep の結果を編集し，その結果をもとにファイルを変更する．
-;(autoload 'grep-edit "edit grep result" nil t)
-;; (require 'grep-edit)
-
 ;;;
 ;; customize font
 ;;;
