@@ -257,6 +257,7 @@
 ;; package-selected-packagesに存在するパッケージでインストールしていないパッケージがあればインストールする関数です。
 (defun my-install-package-if-not-installed ()
   "install packages listed in package-selected-packages if they have not been installed yet."
+  (interactive)
     (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages)))
