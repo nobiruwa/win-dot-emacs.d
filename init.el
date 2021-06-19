@@ -65,6 +65,8 @@
 (menu-bar-mode -1)
 ;; emacsclient
 (server-start)
+;; 対となる括弧を強調表示する場合はnon-nil
+(show-paren-mode 1)
 ;; ツールバーを表示する場合はnon-nil
 (tool-bar-mode -1)
 ;; カーソルのブリンクを有効にする場合はnon-nil
@@ -79,8 +81,6 @@
 (setq line-number-mode t)
 ;; ベル音が不要な場合はnon-nilな関数かシンボル
 (setq ring-bell-function 'ignore)
-;; 対となる括弧を強調表示する場合はnon-nil
-(setq show-paren-mode t)
 ;; ベル音を画面のフラッシュに変更する場合はnon-nil
 (setq visible-bell nil)
 ;; カーソルを点灯したままにする
@@ -250,7 +250,16 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+;; Emacs 27から、パッケージはinit.elのロードよりも前にロードされるようになり、
+;; package-initializeを呼ぶ必要はなくなりました。
+(when (< emacs-major-version 27)
+  (package-initialize))
+;; package-selected-packagesに存在するパッケージでインストールしていないパッケージがあればインストールする関数です。
+(defun my-install-package-if-not-installed ()
+  "install packages listed in package-selected-packages if they have not been installed yet."
+    (when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages)))
 
 ;;;;;;;;
 ;; shell-mode
@@ -490,7 +499,7 @@ See `expand-file-name'."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ac-slime browse-kill-ring company-dict counsel csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode magit markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode wgrep yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
+   '(ac-slime browse-kill-ring company-dict counsel csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode magit markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient rust-mode shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode wgrep yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
