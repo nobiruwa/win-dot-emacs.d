@@ -318,7 +318,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; wgrep
 ;;;;;;;;
-(require-if-not 'wgrep nil t)
+(require-if-not 'wgrep)
 
 ;;;;;;;;
 ;; yasnippet
