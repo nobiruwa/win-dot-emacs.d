@@ -4,10 +4,10 @@
 ;; company-mode
 ;; company-*
 ;;;
-(require 'company)
+(require-if-not 'company)
 
 ;; company-backends
-(require 'company-dict)
+(require-if-not 'company-dict)
 
 (setq company-dict-dir "~/repo/nobiruwa.github/dot-emacs.d.git/company-dict")
 
@@ -43,7 +43,7 @@
 ;;;;;;;;
 ;; counsel
 ;;;;;;;;
-(require 'counsel)
+(require-if-not 'counsel)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
@@ -53,10 +53,12 @@
 (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
 (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+(global-set-key (kbd "C-c C-f") 'find-file)
 
 ;;;;;;;;
 ;;  emmet-mode
 ;;;;;;;;
+(require-if-not 'emmet-mode)
 (eval-after-load "emmet-mode"
   '(progn
      (message "[emmet] redefine emmet-preview-accpet")
@@ -93,6 +95,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; flycheck-mode
 ;;;;;;;;
+(require-if-not 'flycheck)
 (setq flycheck-flake8-maximum-complexity 10)
 (global-set-key (kbd "<f8>") 'flycheck-mode)
 ;;(add-hook 'after-init-hook #'global-flycheck-mode)
@@ -100,13 +103,14 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; god-mode
 ;;;;;;;;
+(require-if-not 'god-mode)
 (global-set-key (kbd "\C-\\") 'god-local-mode)
 
 ;;;;;;;;
 ;; graphviz-dot-mode
 ;;;;;;;;
 ;; cogre-dot-modeがgraphviz-dot-modeを発見できるようrequire
-(require 'graphviz-dot-mode)
+(require-if-not 'graphviz-dot-mode)
 (setq graphviz-dot-auto-indent-on-semi nil)
 (add-hook 'graphviz-dot-mode-hook (lambda () (auto-complete-mode)))
 
@@ -117,6 +121,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; and https://github.com/haskell/haskell-mode/wiki/Indentation
 ;; haskell-indentation-mode is the current implementataion,
 ;; but it's too buggy.
+(require-if-not 'haskell-mode)
 (add-hook 'haskell-mode-hook
           (lambda ()
             (turn-on-haskell-indentation)
@@ -125,7 +130,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; highlight-indentation
 ;;;;;;;;
-(require 'highlight-indentation)
+(require-if-not 'highlight-indentation)
 (add-hook 'python-mode-hook
           (lambda ()
             "turn on highlight-indentation-mode"
@@ -134,7 +139,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; ivy-mode
 ;;;;;;;;
-(require 'ivy)
+(require-if-not 'ivy)
 ;; M-x lsp-java-generate-overrides や M-x lsp-java-spring-initializr など、複数の選択肢から選択する際に使う
 ;; ivyのキーマップには登録されていないが必要不可欠な関数なので、ここで登録する
 (define-key ivy-minibuffer-map (kbd "M-RET") 'ivy-mark)
@@ -185,38 +190,9 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
             (haskell-indentation-mode)))
 
 ;;;;;;;;
-;; reopen-file
-;;;;;;;;
-;; http://namazu.org/~satoru/diary/?200203c&to=200203272#200203272
-;; 編集中のファイルを開き直す
-;; - yes/no の確認が不要;;   - revert-buffer は yes/no の確認がうるさい
-;; - 「しまった! 」というときにアンドゥで元のバッファの状態に戻れる
-;;   - find-alternate-file は開き直したら元のバッファの状態に戻れない
-;;
-(defun reopen-file ()
-  "Reopen file without confirm yes/no."
-  (interactive)
-  (let ((file-name (buffer-file-name))
-        (old-supersession-threat
-         (symbol-function 'ask-user-about-supersession-threat))
-        (point (point)))
-    (when file-name
-      (fset 'ask-user-about-supersession-threat (lambda (fn)))
-      (unwind-protect
-          (progn
-            (erase-buffer)
-            (insert-file file-name)
-            (set-visited-file-modtime)
-            (goto-char point))
-        (fset 'ask-user-about-supersession-threat
-              old-supersession-threat)))))
-;; reopen-fileをC-x C-rにバインド
-(define-key ctl-x-map "\C-r"  'reopen-file)
-
-;;;;;;;;
 ;; plantuml-mode
 ;;;;;;;;
-(require 'plantuml-mode)
+(require-if-not 'plantuml-mode)
 (add-hook 'plantuml-mode-hook
           (lambda ()
             (setq plantuml-jar-path (expand-file-name "~/opt/plantuml/plantuml.jar"))))
@@ -224,6 +200,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; skk
 ;;;;;;;;
+(require-if-not 'skk)
 ;; skk-modeが有効になると、C-jがskk-kakutei-keyにバインドされる
 ;; 使用頻度の殆どないC-oにnewlineをバインドする
 (add-hook 'skk-load-hook
@@ -249,7 +226,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; slime
 ;;;;;;;;
-(require 'slime)
+(require-if-not 'slime)
 
 ;;;;;;;;
 ;; solarized-theme
@@ -285,7 +262,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; swiper
 ;;;;;;;;
-(require 'swiper)
+(require-if-not 'swiper)
 ;; swiper use M-s as the prefix.
 (global-set-key (kbd "M-s M-s") 'swiper)
 (global-set-key (kbd "C-s") 'swiper-isearch)
@@ -295,7 +272,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; undo-tree
 ;;;;;;;;
-(require 'undo-tree)
+(require-if-not 'undo-tree)
 (global-undo-tree-mode)
 ;; rxvt-unicode detects C-c C-/ as C-c C-_
 (define-key undo-tree-map (kbd "C-c C-/") 'undo-tree-redo)
@@ -304,7 +281,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; vue-mode
 ;;;;;;;;
-(require 'vue-mode)
+(require-if-not 'vue-mode)
 (add-hook 'vue-mode-hook
           (lambda ()
             (setq vue-html-extra-indent 2)
@@ -314,13 +291,13 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; wdired
 ;;;;;;;;;
-(require 'wdired)
+(require-if-not 'wdired)
 (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
 
 ;;;;;;;;
 ;; web-mode
 ;;;;;;;;
-(require 'web-mode)
+(require-if-not 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
@@ -341,12 +318,12 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; wgrep
 ;;;;;;;;
-(require 'wgrep nil t)
+(require-if-not 'wgrep nil t)
 
 ;;;;;;;;
 ;; yasnippet
 ;;;;;;;;
-(require 'yasnippet)
+(require-if-not 'yasnippet)
 (setq yas-prompt-functions '(yas/ido-prompt))
 (yas-global-mode 1)
 (add-to-list 'yas-snippet-dirs
@@ -378,7 +355,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;ついでに，今開いているすべてのファイルを対象に grep もできる．
 ;;さらに，M-x search-buffers の後でスペースで区切って単語を入れると，
 ;;バッファの全文検索ができる．
-(require 'color-moccur)
+(require-if-not 'color-moccur)
 (setq *moccur-buffer-name-exclusion-list*
       '(".+TAGS.+" "*Completions*" "*Messages*"
         "newsrc.eld"
@@ -411,12 +388,12 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; color-moccur の検索結果を直接編集し，ファイルに変更を適用できる．
 ;; 関数名の変更などが簡単にできる.
 ;;(autoload 'moccur-edit "moccur-edit" "edit moccur buffer" nil t)
-(require 'moccur-edit)
+(require-if-not 'moccur-edit)
 
 ;; grep-edit -> wgrepに置き換えました。
 ;; grep の結果を編集し，その結果をもとにファイルを変更する．
 ;(autoload 'grep-edit "edit grep result" nil t)
-;; (require 'grep-edit)
+;; (require-if-not 'grep-edit)
 
 ;; Local Variables:
 ;; coding: utf-8-dos

@@ -165,6 +165,17 @@
 ;;             (setq c-basic-offset 2)))
 
 ;;;;;;;;
+;; cedet, ede, semantic, etc.
+;; Ref: Emacs Part 31
+;; URL: http://pc12.2ch.net/test/read.cgi/unix/1251665639/312
+;;;;;;;;
+;; DBファイルを一ヶ所に集約
+(setq semanticdb-default-save-directory "~/.emacs.d/semantic")
+;; disable semantic-mode and global-*-mode in CEDET
+;; CEDET conflicts js2-mode, python-mode
+(semantic-mode -1)
+
+;;;;;;;;
 ;; comint mode
 ;;;;;;;;
 ;; Try without shell prompt change
@@ -402,6 +413,52 @@ See `expand-file-name'."
         ((beginning-of-buffer end-of-buffer)))
     (line-move (- arg)))
   nil)
+
+;;;;;;;;
+;; reopen-file
+;;;;;;;;
+;; http://namazu.org/~satoru/diary/?200203c&to=200203272#200203272
+;; 編集中のファイルを開き直す
+;; - yes/no の確認が不要;;   - revert-buffer は yes/no の確認がうるさい
+;; - 「しまった! 」というときにアンドゥで元のバッファの状態に戻れる
+;;   - find-alternate-file は開き直したら元のバッファの状態に戻れない
+;;
+(defun reopen-file ()
+  "Reopen file without confirm yes/no."
+  (interactive)
+  (let ((file-name (buffer-file-name))
+        (old-supersession-threat
+         (symbol-function 'ask-user-about-supersession-threat))
+        (point (point)))
+    (when file-name
+      (fset 'ask-user-about-supersession-threat (lambda (fn)))
+      (unwind-protect
+          (progn
+            (erase-buffer)
+            (insert-file file-name)
+            (set-visited-file-modtime)
+            (goto-char point))
+        (fset 'ask-user-about-supersession-threat
+              old-supersession-threat)))))
+;; reopen-fileをC-x C-rにバインド
+(define-key ctl-x-map "\C-r"  'reopen-file)
+
+;;;
+;; requireの代わりに使います。
+;;;
+(setq require-if-not-loaded-packages '())
+(defun require-if-not (feature &optional else-body)
+  "パッケージをロードします。パッケージのロードに失敗した場合はELSE-BODYを実行します。ロードに失敗した場合FEATUREがrequire-if-not-loaded-packages変数に追加されます。パッケージをロードした場合はtを、ロードに失敗した場合にはnilを返します。"
+  (if (require feature nil t)
+      (progn
+        (message "require-if-not: [%s] is loaded." feature)
+        t)
+    (progn
+      (add-to-list 'require-if-not-loaded-packages feature)
+      (if (and (boundp 'else-body) (functionp 'else-body))
+          (funcall else-body)
+        (message "require-if-not: [%s] is not loaded." feature))
+      nil)))
 
 ;;;;;;;;;;;;; 以下、ELispファイルを追加する必要があるものを設定 ;;;;;;
 ;;;;;;;;;;;;; アルファベット順になるよう努力 ;;;;;;;;;;;;;;;;;;;;;;;;;
