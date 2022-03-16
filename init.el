@@ -58,6 +58,10 @@
 ;; ロックファイルを作らない
 (setq create-lockfiles nil)
 
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
+;; カスタマイズをinit.elではなく~/.emacs.d/emacs-custom.elに保存する
+(setq custom-file (expand-file-name "~/.emacs.d/emacs-custom.el"))
+
 ;;;;;;;;
 ;; 初期化
 ;;;;;;;;
@@ -106,7 +110,7 @@
 ;; tab-stop-listを直接編集してもOK
 (setq-default tab-width 4)
 (setq tab-stop-list
-'(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76))
+      '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76))
 ;; 字下げをタブではなく空白にする
 (setq-default indent-tabs-mode nil)
 
@@ -469,6 +473,7 @@ See `expand-file-name'."
 ;; Ref: https://www.shimmy1996.com/en/posts/2018-06-24-fun-with-fonts-in-emacs/
 ;; Ref: https://qiita.com/melito/items/238bdf72237290bc6e42
 ;; Ref: http://misohena.jp/blog/2017-09-26-symbol-font-settings-for-emacs25.html
+;; Ref: https://www.reddit.com/r/emacs/comments/ggd90c/color_emoji_in_emacs_27/
 (defvar user--cjk-font "VL Gothic"
   "Default font for CJK characters")
 
@@ -480,6 +485,9 @@ See `expand-file-name'."
 
 (defvar user--unicode-font "Noto Sans Mono CJK JP"
   "Default font for Unicode characters. including emojis")
+
+(defvar user--unicode-emoji-font "Noto Color Emoji"
+  "Default font for Unicode emoji characters.")
 
 ;; Notoフォントでベンガル語(charset名はbengali)を表示するとクラッシュする。
 ;; バックトレースを見るとlibm17n/libotf0でクラッシュしているようだ。
@@ -515,6 +523,8 @@ See `expand-file-name'."
     (set-fontset-font user--standard-fontset charset
                   (font-spec :family user--cjk-font)
                   nil 'prepend))
+  ;; symbolに対してuser--unicode-emoji-fontを使う
+  (set-fontset-font t 'symbol user--unicode-emoji-font nil 'append)
   ;; TODO 日本語フォントではU+2018とU+2019は全角幅だがWeb上の英文ではアポストロフィに使われていて
   ;; 見栄えが悪い。現状は全角で表示し必要に応じてU+0027に置換する。よい方法はないものか。
   (dolist (charset '((#x2018 . #x2019)    ;; Curly single quotes "‘’"
@@ -551,19 +561,8 @@ See `expand-file-name'."
 ;;;
 (load-env-if-exists "~/.emacs.d/init_env_post.el")
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(ac-slime browse-kill-ring company-dict counsel csharp-mode ddskk dockerfile-mode elm-mode elpy emmet-mode f flycheck flycheck-pyflakes flymake god-mode gradle-mode graphviz-dot-mode groovy-mode haskell-mode howm idomenu js2-mode lua-mode magit markdown-mode nginx-mode plantuml-mode powershell purescript-mode restclient rust-mode shakespeare-mode slime solarized-theme swiper treemacs typescript-mode undo-tree vue-mode web-mode wgrep yaml-mode yasnippet yasnippet-classic-snippets yasnippet-snippets)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(provide 'init)
+;;; init.el ends here
 ;; Local Variables:
 ;; coding: utf-8-dos
 ;; End:
