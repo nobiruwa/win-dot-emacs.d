@@ -15,7 +15,7 @@
 ;;;
 ;; 環境ごとの設定を~/.emacs.d/init_env_pre.elに書く
 ;;;
-(load-env-if-exists "~/.emacs.d/init_env_pre.el")
+(load-env-if-exists (expand-file-name "init_env_pre.el" user-emacs-directory))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; グローバルな設定
@@ -24,7 +24,7 @@
 ;; ファイルの扱い
 ;;;;;;;;
 ;; load-path
-(setq load-path (append (list "~/.emacs.d/site-lisp") load-path))
+(setq load-path (append (list (expand-file-name "site-lisp" user-emacs-directory)) load-path))
 
 ;; exec-path
 (defun add-executable-path (path)
@@ -49,7 +49,7 @@
 (setq make-backup-files nil)
 ;; 自動保存ファイル(#foo.txt#)
 ;; 自動保存ファイルの保存場所を"~/.emacs.d/tmp"に変更する
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/tmp/" t)))
+(setq auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/" user-emacs-directory) t)))
 
 ;; 自動保存リストファイル(~/.emacs.d/auto-save-list/.saves-xxxx)
 ;; 自動保存リストファイルはデフォルトの作るので設定を変更しない
@@ -60,7 +60,7 @@
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
 ;; カスタマイズをinit.elではなく~/.emacs.d/emacs-custom.elに保存する
-(setq custom-file (expand-file-name "~/.emacs.d/emacs-custom.el"))
+(setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
 
 ;;;;;;;;
 ;; 初期化
@@ -174,7 +174,7 @@
 ;; URL: http://pc12.2ch.net/test/read.cgi/unix/1251665639/312
 ;;;;;;;;
 ;; DBファイルを一ヶ所に集約
-(setq semanticdb-default-save-directory "~/.emacs.d/semantic")
+(setq semanticdb-default-save-directory (expand-file-name "semantic" user-emacs-directory))
 ;; disable semantic-mode and global-*-mode in CEDET
 ;; CEDET conflicts js2-mode, python-mode
 (semantic-mode -1)
@@ -559,12 +559,12 @@ See `expand-file-name'."
 ;;;
 ;; ~/.emacs.d/emacs-custom.elをロードする
 ;;;
-(load-env-if-exists "~/.emacs.d/emacs-custom.el")
+(load-env-if-exists custom-file)
 
 ;;;
 ;; 環境ごとの設定を~/.emacs.d/init_env_post.elに書く
 ;;;
-(load-env-if-exists "~/.emacs.d/init_env_post.el")
+(load-env-if-exists (expand-file-name "init_env_post.el" user-emacs-directory))
 
 (provide 'init)
 ;;; init.el ends here

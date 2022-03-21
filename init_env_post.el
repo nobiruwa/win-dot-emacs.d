@@ -9,7 +9,7 @@
 ;; company-backends
 (require-if-not 'company-dict)
 
-(setq company-dict-dir "~/repo/nobiruwa.github/dot-emacs.d.git/company-dict")
+(setq company-dict-dir (expand-file-name "~/repo/nobiruwa.github/dot-emacs.d.git/company-dict"))
 
 (with-eval-after-load "company"
   (global-company-mode +1)
@@ -221,7 +221,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (global-set-key "\C-x\C-j" 'skk-mode)
 
 ;; SKK L辞書の場所
-(setq skk-large-jisyo (expand-file-name "~/.emacs.d/dict/SKK-JISYO.L"))
+(setq skk-large-jisyo (expand-file-name "dict/SKK-JISYO.L" user-emacs-directory))
 
 ;;;;;;;;
 ;; slime
