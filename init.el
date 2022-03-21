@@ -557,6 +557,11 @@ See `expand-file-name'."
 ;; 追加の設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;; ~/.emacs.d/emacs-custom.elをロードする
+;;;
+(load-env-if-exists "~/.emacs.d/emacs-custom.el")
+
+;;;
 ;; 環境ごとの設定を~/.emacs.d/init_env_post.elに書く
 ;;;
 (load-env-if-exists "~/.emacs.d/init_env_post.el")
