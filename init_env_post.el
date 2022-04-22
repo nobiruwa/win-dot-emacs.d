@@ -124,8 +124,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (require-if-not 'haskell-mode)
 (add-hook 'haskell-mode-hook
           (lambda ()
-            (turn-on-haskell-indentation)
-            (setq haskell-indent-offset 2)))
+            (turn-on-haskell-indentation)))
 
 ;;;;;;;;
 ;; highlight-indentation
