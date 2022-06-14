@@ -557,7 +557,7 @@ See `expand-file-name'."
 ;; 追加の設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;; ~/.emacs.d/emacs-custom.elをロードする
+;; custom-fileをロードする
 ;;;
 (load-env-if-exists custom-file)
 
