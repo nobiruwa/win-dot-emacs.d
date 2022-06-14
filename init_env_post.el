@@ -27,7 +27,7 @@
           ;; lsp-modeが以下の警告を表示するので、とりあえずコメントアウト
           ;; `company-lsp` is not supported anymore. Using `company-capf` as the `lsp-completion-provider`.
           ;; company-lsp
-          company-xcode
+          company-clang
           company-cmake
           company-capf
           company-files
@@ -44,16 +44,17 @@
 ;; counsel
 ;;;;;;;;
 (require-if-not 'counsel)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-(global-set-key (kbd "C-c C-f") 'find-file)
+(with-eval-after-load "counsel"
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+  (global-set-key (kbd "C-c C-f") 'find-file))
 
 ;;;;;;;;
 ;;  emmet-mode
@@ -81,8 +82,14 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
        (emmet-preview-abort))
      ))
 
-(add-hook 'html-mode-hook 'emmet-mode)
-(add-hook 'web-mode-hook 'emmet-mode)
+(add-hook 'html-mode-hook
+          (lambda ()
+            (setq-local emmet-self-closing-tag-style "")
+            (emmet-mode)))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (setq-local emmet-self-closing-tag-style "")
+            (emmet-mode)))
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
 (add-hook 'emmet-mode-hook
@@ -97,14 +104,16 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 (require-if-not 'flycheck)
 (setq flycheck-flake8-maximum-complexity 10)
-(global-set-key (kbd "<f8>") 'flycheck-mode)
+(with-eval-after-load "flycheck"
+    (global-set-key (kbd "<f8>") 'flycheck-mode))
 ;;(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;;;;;;;
 ;; god-mode
 ;;;;;;;;
 (require-if-not 'god-mode)
-(global-set-key (kbd "\C-\\") 'god-local-mode)
+(with-eval-after-load "god-mode"
+  (global-set-key (kbd "\C-\\") 'god-local-mode))
 
 ;;;;;;;;
 ;; graphviz-dot-mode
@@ -183,6 +192,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;;;;;;;
 ;; purescript-mode
 ;;;;;;;;
+(require-if-not 'purescript-mode)
 (add-hook 'purescript-mode-hook
           (lambda ()
             (setq haskell-literate nil)
@@ -215,9 +225,10 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (setq skk-aux-large-jisyo nil)
 ;; ▽モードと▼モード時のアンドゥ情報を記録しない
 (setq skk-undo-kakutei-word-only t)
-;; C-x j のskk-auto-fill-modeは使わない
-(global-set-key "\C-xj" 'skk-mode)
-(global-set-key "\C-x\C-j" 'skk-mode)
+(with-eval-after-load "skk"
+  ;; C-x j のskk-auto-fill-modeは使わない
+  (global-set-key "\C-xj" 'skk-mode)
+  (global-set-key "\C-x\C-j" 'skk-mode))
 
 ;; SKK L辞書の場所
 (setq skk-large-jisyo (expand-file-name "dict/SKK-JISYO.L" user-emacs-directory))
@@ -262,11 +273,12 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; swiper
 ;;;;;;;;
 (require-if-not 'swiper)
-;; swiper use M-s as the prefix.
-(global-set-key (kbd "M-s M-s") 'swiper)
-(global-set-key (kbd "C-s") 'swiper-isearch)
-(global-set-key (kbd "C-r") 'swiper-isearch-backward)
-(global-set-key (kbd "M-s s") 'swiper-thing-at-point)
+(with-eval-after-load "swiper"
+  ;; swiper use M-s as the prefix.
+  (global-set-key (kbd "M-s M-s") 'swiper)
+  (global-set-key (kbd "C-s") 'swiper-isearch)
+  (global-set-key (kbd "C-r") 'swiper-isearch-backward)
+  (global-set-key (kbd "M-s s") 'swiper-thing-at-point))
 
 ;;;;;;;;
 ;; undo-tree
@@ -276,6 +288,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; rxvt-unicode detects C-c C-/ as C-c C-_
 (define-key undo-tree-map (kbd "C-c C-/") 'undo-tree-redo)
 (define-key undo-tree-map (kbd "C-c C-_") 'undo-tree-redo)
+(setq undo-tree-auto-save-history nil)
 
 ;;;;;;;;
 ;; vue-mode
