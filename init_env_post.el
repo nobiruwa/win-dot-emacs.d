@@ -60,7 +60,7 @@
 ;;  emmet-mode
 ;;;;;;;;
 (require-if-not 'emmet-mode)
-(eval-after-load "emmet-mode"
+(with-eval-after-load "emmet-mode"
   '(progn
      (message "[emmet] redefine emmet-preview-accpet")
      (defun emmet-preview-accept
@@ -148,12 +148,13 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; ivy-mode
 ;;;;;;;;
 (require-if-not 'ivy)
-;; M-x lsp-java-generate-overrides や M-x lsp-java-spring-initializr など、複数の選択肢から選択する際に使う
-;; ivyのキーマップには登録されていないが必要不可欠な関数なので、ここで登録する
-(define-key ivy-minibuffer-map (kbd "M-RET") 'ivy-mark)
-;; `./`と`../`を先頭に表示する必要はない
-;; リストの末尾に置けるならばよかったのだが
-(setq ivy-extra-directories nil)
+(with-eval-after-load "ivy"
+  ;; M-x lsp-java-generate-overrides や M-x lsp-java-spring-initializr など、複数の選択肢から選択する際に使う
+  ;; ivyのキーマップには登録されていないが必要不可欠な関数なので、ここで登録する
+  (define-key ivy-minibuffer-map (kbd "M-RET") 'ivy-mark)
+  ;; `./`と`../`を先頭に表示する必要はない
+  ;; リストの末尾に置けるならばよかったのだが
+  (setq ivy-extra-directories nil))
 
 ;;;;;;;;
 ;; js-mode
@@ -213,14 +214,14 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; skk-modeが有効になると、C-jがskk-kakutei-keyにバインドされる
 ;; 使用頻度の殆どないC-oにnewlineをバインドする
 (add-hook 'skk-load-hook
-          '(lambda ()
-             (progn
-               (if (functionp 'electric-newline-and-maybe-indent)
-                   (progn
-                     (define-key skk-abbrev-mode-map "\C-o" 'electric-newline-and-maybe-indent)
-                     (define-key skk-latin-mode-map "\C-o" 'electric-newline-and-maybe-indent)
-                     (define-key skk-jisx0208-latin-mode-map "\C-o" 'electric-newline-and-maybe-indent)
-                     (define-key skk-j-mode-map "\C-o" 'electric-newline-and-maybe-indent))))))
+          (lambda ()
+            (progn
+              (if (functionp 'electric-newline-and-maybe-indent)
+                  (progn
+                    (define-key skk-abbrev-mode-map "\C-o" 'electric-newline-and-maybe-indent)
+                    (define-key skk-latin-mode-map "\C-o" 'electric-newline-and-maybe-indent)
+                    (define-key skk-jisx0208-latin-mode-map "\C-o" 'electric-newline-and-maybe-indent)
+                    (define-key skk-j-mode-map "\C-o" 'electric-newline-and-maybe-indent))))))
 
 (setq skk-aux-large-jisyo nil)
 ;; ▽モードと▼モード時のアンドゥ情報を記録しない
@@ -310,15 +311,16 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; web-mode
 ;;;;;;;;
 (require-if-not 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[s]?css\\'" . web-mode))
+(with-eval-after-load "web-mode"
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[s]?css\\'" . web-mode)))
 (add-hook 'web-mode-hook (lambda ()
                            (progn
                              (auto-fill-mode -1)
@@ -336,11 +338,12 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; yasnippet
 ;;;;;;;;
 (require-if-not 'yasnippet)
-(setq yas-prompt-functions '(yas/ido-prompt))
-(yas-global-mode 1)
-(add-to-list 'yas-snippet-dirs
-             (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
-(yas-load-directory (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
+(with-eval-after-load "yasnippet"
+  (setq yas-prompt-functions '(yas/ido-prompt))
+  (yas-global-mode 1)
+  (add-to-list 'yas-snippet-dirs
+               (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
+  (yas-load-directory (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
 
 ;; あるバッファで YASnippet マイナーモードを OFF にしたい
 ;;(set-default 'yas/dont-activate
@@ -368,29 +371,30 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;;さらに，M-x search-buffers の後でスペースで区切って単語を入れると，
 ;;バッファの全文検索ができる．
 (require-if-not 'color-moccur)
+(with-eval-after-load "color-moccur"
+  (define-key Buffer-menu-mode-map "O" 'Buffer-menu-moccur)
+  (define-key dired-mode-map "O" 'dired-do-moccur))
 (setq *moccur-buffer-name-exclusion-list*
       '(".+TAGS.+" "*Completions*" "*Messages*"
         "newsrc.eld"
         " *migemo*" ".bbdb"))
 (setq dmoccur-exclusion-mask
       (append (remove "\\.git/.+" dmoccur-exclusion-mask) '("/\\.git/.+")))
-(define-key Buffer-menu-mode-map "O" 'Buffer-menu-moccur)
 (setq dmoccur-use-list t)
 (setq dmoccur-use-project t)
 (setq dmoccur-list
       '(
-        ;(任意の名前 実際のディレクトリ 検索したいファイルの正規表現 オプション)
+        ;;(任意の名前 実際のディレクトリ 検索したいファイルの正規表現 オプション)
         ("dir" default-directory (".*") dir)
         ("current" default-directory (".*") nil)
         ;;("soft" "~/www/soft/" ("\\.texi$") nil)
         ;;("config" "~/mylisp/"  ("\\.js" "\\.el$") nil)
         ;;("1.99" "d:/unix/Meadow2/1.99a6/" (".*") sub)
         ))
-(define-key dired-mode-map "O" 'dired-do-moccur)
 (setq moccur-split-word t)
 (setq color-moccur-default-ime-status nil)
 ;;(global-set-key "\C-c\C-x\C-o" 'moccur)
-;別のキーバインドにしたい
+;;別のキーバインドにしたい
 ;;(global-set-key "\C-c\C-o" 'search-buffers)
 ;; If this value is t, cursor motion in the moccur-grep buffer causes
 ;; automatic display of the corresponding source code location.
