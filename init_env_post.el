@@ -64,7 +64,7 @@
   '(progn
      (message "[emmet] redefine emmet-preview-accpet")
      (defun emmet-preview-accept
-       ()
+         ()
        "Original emmet-preview-accept does not work.
 Temporarily, bind expr to the return value of emmet-expr-on-line."
        (interactive)
@@ -105,7 +105,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (require-if-not 'flycheck)
 (setq flycheck-flake8-maximum-complexity 10)
 (with-eval-after-load "flycheck"
-    (global-set-key (kbd "<f8>") 'flycheck-mode))
+  (global-set-key (kbd "<f8>") 'flycheck-mode))
 ;;(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;;;;;;;
@@ -160,8 +160,8 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; js-mode
 ;;;;;;;;
 (add-hook 'js-mode-hook
-     (lambda ()
-       (setq js-indent-level 2)))
+          (lambda ()
+            (setq js-indent-level 2)))
 
 ;;;;;;;;
 ;; js2-mode
@@ -172,8 +172,8 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-hook 'js2-mode-hook
-     (lambda ()
-       (setq js2-basic-offset 2)))
+          (lambda ()
+            (setq js2-basic-offset 2)))
 
 ;;;;;;;;
 ;; org-mode
@@ -243,22 +243,22 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; solarized-theme
 ;;;;;;;;
 ;; make the fringe stand out from the background
-;(setq solarized-distinct-fringe-background t)
+;; (setq solarized-distinct-fringe-background t)
 
 ;; Don't change the font for some headings and titles
 (setq solarized-use-variable-pitch nil)
 
 ;; make the modeline high contrast
-;(setq solarized-high-contrast-mode-line t)
+;; (setq solarized-high-contrast-mode-line t)
 
 ;; Use less bolding
-;(setq solarized-use-less-bold t)
+;; (setq solarized-use-less-bold t)
 
 ;; Use more italics
-;(setq solarized-use-more-italic t)
+;; (setq solarized-use-more-italic t)
 
 ;; Use less colors for indicators such as git:gutter, flycheck and similar
-;(setq solarized-emphasize-indicators nil)
+;; (setq solarized-emphasize-indicators nil)
 
 ;; Don't change size of org-mode headlines (but keep other size-changes)
 (setq solarized-scale-org-headlines nil)
@@ -343,7 +343,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
   (yas-global-mode 1)
   (add-to-list 'yas-snippet-dirs
                (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
-  (yas-load-directory (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git"))
+  (yas-load-directory (expand-file-name "~/repo/nobiruwa.github/yasnippet-snippets.git")))
 
 ;; あるバッファで YASnippet マイナーモードを OFF にしたい
 ;;(set-default 'yas/dont-activate
@@ -408,7 +408,7 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 
 ;; grep-edit -> wgrepに置き換えました。
 ;; grep の結果を編集し，その結果をもとにファイルを変更する．
-;(autoload 'grep-edit "edit grep result" nil t)
+;; (autoload 'grep-edit "edit grep result" nil t)
 ;; (require-if-not 'grep-edit)
 
 ;; Local Variables:
