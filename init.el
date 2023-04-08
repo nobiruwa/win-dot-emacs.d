@@ -138,6 +138,13 @@
 (setq file-name-coding-system 'utf-8-dos)
 
 ;;;;;;;;
+;; Native Compile
+;;;;;;;;
+(when (and (functionp 'native-comp-available-p) (native-comp-available-p))
+  ;; コンパイル時の警告やエラーを出力するとき*Warning*バッファのウィンドウをポップアップさせない
+  (setq native-comp-async-report-warnings-errors 'silent))
+
+;;;;;;;;
 ;; Windows用の設定
 ;;;;;;;;
 (when (eq window-system 'w32)
@@ -228,9 +235,9 @@
 ;;;;;;;;
 ;; java-mode
 ;;;;;;;;
-(add-hook 'java-mode-hook '(lambda ()
-                             (setq indent-tabs-mode nil)
-                             (setq c-basic-offset 4)))
+(add-hook 'java-mode-hook (lambda ()
+                            (setq indent-tabs-mode nil)
+                            (setq c-basic-offset 4)))
 
 ;;;;;;;;
 ;; mouse, mwheel
@@ -270,7 +277,7 @@
 (when (< emacs-major-version 27)
   (package-initialize))
 ;; package-selected-packagesに存在するパッケージでインストールしていないパッケージがあればインストールする関数です。
-(defun my-install-package-if-not-installed ()
+(defun my-install-packages-if-not-installed ()
   "install packages listed in package-selected-packages if they have not been installed yet."
   (interactive)
     (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -280,6 +287,7 @@
 ;;;;;;;;
 ;; shell-mode
 ;;;;;;;;
+(require 'shell)
 ;; *shell*バッファを現在のウィンドウで開く
 (add-to-list 'display-buffer-alist
              '("^\\*shell\\*\\(<[0-9]+>\\)?$" . (display-buffer-same-window)))
@@ -317,6 +325,49 @@
             (ansi-color-for-comint-mode-on)
             ;; "../" "./"を後ろに回す
             (setq-local company-transformers '(company--sort-with-making-special-name-at-the-end))))
+
+;;;
+;; shell-modeにおいて、company-modeのcomapny-capfが実行ファイル名の解決を行うとき
+;; 探索するディレクトリを制限します。
+;;;
+(defcustom shell-command-ignored-exec-path-regexp "/mnt/.*"
+  "a REGEXP to be ignored when searching executables from `exec-path' directories."
+  :type 'regexp)
+
+(defvar shell-command-original-exec-path nil
+  "the original exec-path value before running shell-command-completion.")
+
+(defun deep-copy-sequence (x)
+  "Make a deep copy of the given sequence X."
+  (mapcar #'copy-sequence x))
+
+(defun shell-command-backup-exec-path ()
+  "backup `exec-path'"
+  (setq shell-command-original-exec-path (deep-copy-sequence exec-path)))
+
+(defun shell-command-remove-from-exec-path ()
+  "remove elements matching `shell-command-ignored-exec-path-regexp' from `exec-path'"
+  (cl-delete-if
+   (lambda (path)
+     (string-match-p shell-command-ignored-exec-path-regexp path)) exec-path))
+
+(defun shell-command-restore-exec-path (&rest args)
+  "restore `exec-path' from `shell-command-ignored-exec-path-regexp'"
+  (when shell-command-original-exec-path
+    (setq exec-path shell-command-original-exec-path)
+    (setq shell-command-original-exec-path nil)))
+
+(defun shell-command-comint-completion-at-point-around (orig-func &rest args)
+  "An advice function which change `exec-path' during calling ORIG-FUNC. Restores `exec-path' at the end. It works only in shell-mode."
+  (when (derived-mode-p 'shell-mode)
+    (shell-command-backup-exec-path)
+    (shell-command-remove-from-exec-path)
+    (let ((res (ignore-errors (apply orig-func args))))
+      (shell-command-restore-exec-path)
+      res)))
+
+;; To enable this, uncomment the following line.
+;; (advice-add 'comint-completion-at-point :around #'shell-command-comint-completion-at-point-around)
 
 ;;;;;;;;
 ;; uniquify
@@ -577,6 +628,47 @@ See `expand-file-name'."
     (if (package-installed-p 'solarized-theme)
         (load-theme 'solarized-dark t)
       (load-theme 'tango-dark t)))
+
+;;;;;;;;
+;; 色の設定
+;;;;;;;;
+(require-if-not 'font-lock)
+(if (not (featurep 'xemacs)) (global-font-lock-mode t))
+;; 全角スペースとかに色を付ける
+;; 色はM-x list-color-displayで確認できる
+(defface my-face-b-1 '((t (:background "#9e9e9e"))) nil) ; color-247
+(defface my-face-b-2 '((t (:background "#d480d4"))) nil) ; color-219
+(defface my-face-u-1 '((t (:foreground "#8055aa" :underline t))) nil) ; color-140
+(defvar my-face-b-1 'my-face-b-1)
+(defvar my-face-b-2 'my-face-b-2)
+(defvar my-face-u-1 'my-face-u-1)
+;;just in timeな色付け
+(setq font-lock-support-mode 'jit-lock-mode)
+(defadvice font-lock-mode (before my-font-lock-mode ())
+  (font-lock-add-keywords major-mode
+                          '(("　" 0 my-face-b-1 append)
+                            ("\t" 0 my-face-b-2 append)
+                            ("[ ]+$" 0 my-face-u-1 append))))
+(ad-enable-advice 'font-lock-mode 'before 'my-font-lock-mode)
+(ad-activate 'font-lock-mode)
+(add-hook 'find-file-hooks
+          (lambda () (if font-lock-mode nil (font-lock-mode t))))
+
+(if (not (or (eq system-type 'cygwin) (eq window-system 'x)))
+    (progn (show-paren-mode 1)
+           (set-face-attribute 'show-paren-match nil
+                               :foreground "brightyellow"
+                               :weight 'bold)
+           (set-face-attribute 'font-lock-comment-delimiter-face nil
+                               :foreground "green")
+           (set-face-attribute 'font-lock-comment-face nil
+                               :foreground "green")))
+
+;;;
+;; cygwin
+;;;
+(if (eq system-type 'cygwin)
+    (progn (load "init-cygwin")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 追加の設定
