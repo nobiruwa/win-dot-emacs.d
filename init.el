@@ -629,41 +629,6 @@ See `expand-file-name'."
         (load-theme 'solarized-dark t)
       (load-theme 'tango-dark t)))
 
-;;;;;;;;
-;; 色の設定
-;;;;;;;;
-(require-if-not 'font-lock)
-(if (not (featurep 'xemacs)) (global-font-lock-mode t))
-;; 全角スペースとかに色を付ける
-;; 色はM-x list-color-displayで確認できる
-(defface my-face-b-1 '((t (:background "#9e9e9e"))) nil) ; color-247
-(defface my-face-b-2 '((t (:background "#d480d4"))) nil) ; color-219
-(defface my-face-u-1 '((t (:foreground "#8055aa" :underline t))) nil) ; color-140
-(defvar my-face-b-1 'my-face-b-1)
-(defvar my-face-b-2 'my-face-b-2)
-(defvar my-face-u-1 'my-face-u-1)
-;;just in timeな色付け
-(setq font-lock-support-mode 'jit-lock-mode)
-(defadvice font-lock-mode (before my-font-lock-mode ())
-  (font-lock-add-keywords major-mode
-                          '(("　" 0 my-face-b-1 append)
-                            ("\t" 0 my-face-b-2 append)
-                            ("[ ]+$" 0 my-face-u-1 append))))
-(ad-enable-advice 'font-lock-mode 'before 'my-font-lock-mode)
-(ad-activate 'font-lock-mode)
-(add-hook 'find-file-hooks
-          (lambda () (if font-lock-mode nil (font-lock-mode t))))
-
-(if (not (or (eq system-type 'cygwin) (eq window-system 'x)))
-    (progn (show-paren-mode 1)
-           (set-face-attribute 'show-paren-match nil
-                               :foreground "brightyellow"
-                               :weight 'bold)
-           (set-face-attribute 'font-lock-comment-delimiter-face nil
-                               :foreground "green")
-           (set-face-attribute 'font-lock-comment-face nil
-                               :foreground "green")))
-
 ;;;
 ;; cygwin
 ;;;
