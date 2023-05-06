@@ -272,6 +272,8 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("gnu-devel" . "https://elpa.gnu.org/devel/") t)
 ;; Emacs 27から、パッケージはinit.elのロードよりも前にロードされるようになり、
 ;; package-initializeを呼ぶ必要はなくなりました。
 (when (< emacs-major-version 27)
