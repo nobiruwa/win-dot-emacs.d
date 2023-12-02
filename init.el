@@ -43,6 +43,8 @@
 (add-executable-path "C:/findutils/bin")
 (add-executable-path "C:/grep/bin")
 (add-executable-path "C:/sed/bin")
+;; Gitのdiff等を用いる場合
+(add-executable-path "c:/Program Files/Git/usr/bin")
 
 ;; バックアップファイル(foo.txt~)
 ;; バックアップファイルを作らない
