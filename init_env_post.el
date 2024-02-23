@@ -208,6 +208,19 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
             (setq plantuml-jar-path (expand-file-name "~/opt/plantuml/plantuml.jar"))))
 
 ;;;;;;;;
+;; rust-mode
+;;;;;;;;
+(require-if-not 'rust-mode)
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            )
+
+  ;; Formatting is bound to C-c C-f.
+  ;; The folowing enables automatic formatting on save.
+  (setq rust-format-on-save t))
+
+;;;;;;;;
 ;; skk
 ;;;;;;;;
 (require-if-not 'skk)

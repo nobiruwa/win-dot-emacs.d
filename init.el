@@ -223,6 +223,13 @@
                                     'split-window-vertically))
 
 ;;;;;;;;
+;; eglot
+;;;;;;;;
+(require 'eglot)
+(with-eval-after-load "eglot"
+  (setq eglot-autoshutdown t))
+
+;;;;;;;;
 ;; ido-mode
 ;;;;;;;;
 (require 'ido)
