@@ -330,6 +330,8 @@
           (lambda ()
             ;; use CP932
             (set-buffer-process-coding-system 'cp932-dos 'cp932-dos)
+            ;; TAB幅は8
+            (setq tab-width 8)
             ;; 存在しないファイル名の入力をスムーズにするため
             (setq-local company-require-match nil)
             ;; 色付け
