@@ -1,3 +1,16 @@
+;;;;;;;;;;;;;グローバルな設定 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;
+;; PATH
+;;;;;;;;
+;; GnuWin32のinstall.batですべてのパッケージをインストールした場合
+(add-executable-path "C:/gnu/gnuwin32/bin")
+;; GnuWin32の実行ファイルを個別にダウンロードした場合
+(add-executable-path "C:/gnuwin32/coreutils/bin")
+(add-executable-path "C:/gnuwin32/diffutils/bin")
+(add-executable-path "C:/gnuwin32/findutils/bin")
+(add-executable-path "C:/gnuwin32/grep/bin")
+(add-executable-path "C:/gnuwin32/sed/bin")
+
 ;;;;;;;;;;;;; 以下、ELispファイルを追加する必要があるものを設定 ;;;;;;
 ;;;;;;;;;;;;; アルファベット順になるよう努力 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -429,6 +442,8 @@ Temporarily, bind expr to the return value of emmet-expr-on-line."
 ;; grep の結果を編集し，その結果をもとにファイルを変更する．
 ;; (autoload 'grep-edit "edit grep result" nil t)
 ;; (require-if-not 'grep-edit)
+
+;;;;;;;;;;;;; 端末独自設定 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Local Variables:
 ;; coding: utf-8-dos
